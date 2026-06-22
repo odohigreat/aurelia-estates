@@ -20,7 +20,7 @@ export function MetricCard({ label, value, trend, icon, className }: MetricProps
         <div className="flex justify-between items-start">
           <div className="space-y-2">
             <p className="text-sm font-medium text-slate-muted">{label}</p>
-            <p className="text-3xl font-mono tracking-tight text-white">{value}</p>
+            <p className="text-3xl tracking-tight text-white">{value}</p>
           </div>
           {icon && (
             <div className="p-2 bg-surface rounded-md border border-border">

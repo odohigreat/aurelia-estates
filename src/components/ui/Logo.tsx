@@ -29,7 +29,7 @@ export function Logo({ onClick, className = "", isFooter = false, to = "/", icon
         </svg>
       </div>
       {!iconOnly && (
-        <span className={`font-bold uppercase tracking-[0.2em] text-white ${isFooter ? 'text-xl' : 'text-2xl'}`}>
+        <span className={`hidden sm:inline-block font-bold uppercase tracking-[0.2em] text-white ${isFooter ? 'text-xl' : 'text-2xl'}`}>
           Aurelia<span className="text-primary font-light ml-2 tracking-[0.1em]">Estates</span>
         </span>
       )}

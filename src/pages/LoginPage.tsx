@@ -2,7 +2,7 @@ import * as React from 'react';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUIStore } from '../hooks/useStore';
-import { Building2, Loader2, ShieldCheck } from 'lucide-react';
+import { Loader2, ShieldCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';

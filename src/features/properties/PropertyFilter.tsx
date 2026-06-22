@@ -14,7 +14,7 @@ export const PropertyFilter = React.memo(({ activeTier, onTierChange }: FilterPr
     <Card className="mb-8 glass-panel">
       <CardContent className="p-4 flex flex-wrap gap-4 items-center">
         <span className="text-sm font-medium text-slate-muted">Filter by Tier:</span>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
           {tiers.map((tier) => (
             <Button
               key={tier}

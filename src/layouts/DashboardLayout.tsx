@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Building2, UserCircle, LogOut } from 'lucide-react';
+import { UserCircle, LogOut } from 'lucide-react';
 import { useUIStore } from '../hooks/useStore';
 import { Logo } from '../components/ui/Logo';
 
@@ -29,22 +29,22 @@ export default function DashboardLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Logo to="/dashboard/portfolio" />
-            <div className="flex space-x-4">
+            <div className="flex space-x-1 sm:space-x-4 overflow-x-auto">
               <Link 
                 to="/dashboard/portfolio"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'portfolio' ? 'bg-surface text-primary' : 'text-gray-300 hover:text-white hover:bg-surface-hover'}`}
+                className={`px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'portfolio' ? 'bg-surface text-primary' : 'text-gray-300 hover:text-white hover:bg-surface-hover'}`}
               >
                 Portfolio
               </Link>
               <Link 
                 to="/dashboard/intelligence"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'intelligence' ? 'bg-surface text-primary' : 'text-gray-300 hover:text-white hover:bg-surface-hover'}`}
+                className={`px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'intelligence' ? 'bg-surface text-primary' : 'text-gray-300 hover:text-white hover:bg-surface-hover'}`}
               >
                 Intelligence
               </Link>
               <Link 
                 to="/dashboard/compliance"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'compliance' ? 'bg-surface text-primary' : 'text-gray-300 hover:text-white hover:bg-surface-hover'}`}
+                className={`px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'compliance' ? 'bg-surface text-primary' : 'text-gray-300 hover:text-white hover:bg-surface-hover'}`}
               >
                 Compliance
               </Link>
