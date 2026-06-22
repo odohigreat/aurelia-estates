@@ -1,5 +1,5 @@
 import { motion, type Variants } from 'framer-motion';
-import { ShieldCheck, Activity, Globe, MapPin, TrendingUp } from 'lucide-react';
+import { ShieldCheck, Activity, Globe } from 'lucide-react';
 import { Card, CardContent } from '../ui/Card';
 
 export function BentoFeatures() {

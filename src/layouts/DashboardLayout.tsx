@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Building2, UserCircle, LogOut } from 'lucide-react';
 import { useUIStore } from '../hooks/useStore';
+import { Logo } from '../components/ui/Logo';
 
 export default function DashboardLayout() {
   const location = useLocation();
@@ -27,14 +28,7 @@ export default function DashboardLayout() {
       <nav className="border-b border-border bg-surface/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/dashboard/portfolio" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                <Building2 className="text-background w-5 h-5" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-white hidden sm:block">
-                AURELIA <span className="text-primary font-normal">ESTATES</span>
-              </span>
-            </Link>
+            <Logo to="/dashboard/portfolio" />
             <div className="flex space-x-4">
               <Link 
                 to="/dashboard/portfolio"

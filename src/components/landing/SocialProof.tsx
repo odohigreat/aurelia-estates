@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
+import { Landmark, Mountain, Globe, Shield, TrendingUp, Compass } from 'lucide-react';
 
 const PARTNERS = [
-  'Oakhaven Capital',
-  'Crestview Partners',
-  'Aether Holdings',
-  'Vanguard Real Estate',
-  'Summit Institutional',
-  'Equinox Ventures'
+  { name: 'Oakhaven Capital', Icon: Landmark },
+  { name: 'Crestview Partners', Icon: Mountain },
+  { name: 'Aether Holdings', Icon: Globe },
+  { name: 'Vanguard Real Estate', Icon: Shield },
+  { name: 'Summit Institutional', Icon: TrendingUp },
+  { name: 'Equinox Ventures', Icon: Compass }
 ];
 
 export function SocialProof() {
@@ -31,9 +32,10 @@ export function SocialProof() {
           {[...PARTNERS, ...PARTNERS, ...PARTNERS].map((partner, index) => (
             <div 
               key={index} 
-              className="text-2xl font-bold text-slate-muted/40 hover:text-slate-muted/80 transition-colors whitespace-nowrap"
+              className="flex items-center space-x-3 text-2xl font-bold text-slate-muted/40 hover:text-slate-muted/80 transition-colors whitespace-nowrap cursor-pointer"
             >
-              {partner}
+              <partner.Icon className="w-8 h-8" />
+              <span>{partner.name}</span>
             </div>
           ))}
         </motion.div>
