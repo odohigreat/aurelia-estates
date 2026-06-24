@@ -27,7 +27,7 @@ export default function LandingPage() {
           <p className="text-xl text-slate-muted mb-12 max-w-2xl mx-auto">
             Join an exclusive network of institutional investors and family offices executing ultra-luxury transactions.
           </p>
-          <a href="/login" className="inline-flex items-center justify-center h-14 px-10 text-lg font-semibold rounded-full bg-primary text-background hover:bg-primary-hover shadow-[0_0_40px_rgba(212,175,55,0.3)] transition-all hover:scale-105">
+          <a href="/login" className="inline-flex items-center justify-center h-14 px-10 text-lg font-semibold rounded-md bg-primary text-background hover:bg-primary-hover shadow-[0_0_40px_rgba(212,175,55,0.3)] transition-all hover:scale-105">
             Request Exclusive Access
           </a>
         </div>
