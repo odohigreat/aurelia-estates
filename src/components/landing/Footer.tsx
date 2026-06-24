@@ -39,14 +39,21 @@ export function Footer() {
           <div>
             <h4 className="text-white font-bold mb-4">Request Access</h4>
             <p className="text-slate-muted text-sm mb-4">Strictly for qualified institutional and high-net-worth individuals.</p>
-            <div className="flex">
+            <form 
+              className="flex"
+              onSubmit={(e) => {
+                e.preventDefault();
+                window.location.href = '/signup';
+              }}
+            >
               <input
                 type="email"
+                required
                 placeholder="Institutional Email"
                 className="bg-surface border border-border px-4 py-2 text-sm rounded-l-md focus:outline-none focus:border-primary text-white w-full"
               />
-              <Button className="rounded-l-none rounded-r-md">Submit</Button>
-            </div>
+              <Button type="submit" className="rounded-l-none rounded-r-md">Submit</Button>
+            </form>
           </div>
         </div>
 

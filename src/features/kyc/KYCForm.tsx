@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { z } from 'zod';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -14,6 +15,7 @@ const kycSchema = z.object({
 type KYCFormData = z.infer<typeof kycSchema>;
 
 export function KYCForm() {
+  const navigate = useNavigate();
   const [formData, setFormData] = React.useState<Partial<KYCFormData>>({});
   const [errors, setErrors] = React.useState<Partial<Record<keyof KYCFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -65,7 +67,7 @@ export function KYCForm() {
           <CardDescription>
             Your high-net-worth clearance has been approved. You now have full access to Ultra-Luxury tier properties.
           </CardDescription>
-          <Button className="mt-6" onClick={() => setStatus('idle')}>Continue to Dashboard</Button>
+          <Button className="mt-6" onClick={() => navigate('/dashboard')}>Continue to Dashboard</Button>
         </CardContent>
       </Card>
     );

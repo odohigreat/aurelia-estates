@@ -1,5 +1,6 @@
 import { StaticPageHeader } from '../../components/ui/StaticPageHeader';
 import { Button } from '../../components/ui/Button';
+import { Link } from 'react-router-dom';
 
 const OPEN_ROLES = [
   { title: "Lead Quantitative Analyst", location: "London / Hybrid", type: "Full-Time" },
@@ -35,7 +36,9 @@ export default function CareersPage() {
                 </div>
               </div>
               <div className="mt-4 md:mt-0">
-                <Button variant="outline">Apply Now</Button>
+                <Link to="/contact">
+                  <Button variant="outline">Apply Now</Button>
+                </Link>
               </div>
             </div>
           ))}

@@ -1,8 +1,16 @@
 import { StaticPageHeader } from '../../components/ui/StaticPageHeader';
 import { Button } from '../../components/ui/Button';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
 
 export default function ContactPage() {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate('/');
+  };
+
   return (
     <div className="pb-24">
       <StaticPageHeader 
@@ -16,7 +24,7 @@ export default function ContactPage() {
           <p className="text-slate-muted mb-8 text-lg">
             Our global offices operate strictly by appointment. For platform access or syndication inquiries, please submit your details below. A delegate will contact you within 24 hours.
           </p>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">First Name</label>
