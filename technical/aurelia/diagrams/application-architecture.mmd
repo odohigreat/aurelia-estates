@@ -1,0 +1,20 @@
+flowchart TB
+  accTitle: Application architecture
+  accDescr: React routes compose public pages and protected dashboards. Supabase supplies accounts and published listings. Authenticated enquiries use confirmed server defaults and RLS.
+  Build["BUILD<br/>Vite · TypeScript · Tailwind"]
+  App["APPLICATION<br/>React Router · lazy pages"]
+  State["STATE<br/>React Query inventory cache<br/>Zustand session and UI"]
+  Auth["SUPABASE AUTH<br/>PKCE · session restoration<br/>Protected dashboard routes"]
+  Data["SUPABASE DATA<br/>Published-property REST reads<br/>RLS and column permissions"]
+  Views["PROPERTY EXPERIENCE<br/>Filters · public details · native dialog<br/>Separate currency totals"]
+  Forms["ENQUIRY WORKFLOW<br/>Zod · local preview<br/>Authenticated Supabase insert"]
+  Charts["ILLUSTRATIVE ANALYTICS<br/>Recharts · static public bars<br/>Reduced-motion support"]
+  Build --> App
+  App --> State
+  App --> Auth
+  App --> Data
+  State --> Views
+  Data --> Views
+  Views --> Forms
+  Views --> Charts
+  classDef default fill:#ffffff,stroke:#ccd3dc,color:#172033,stroke-width:1.5px;

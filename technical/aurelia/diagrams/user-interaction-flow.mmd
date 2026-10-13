@@ -1,0 +1,21 @@
+flowchart TB
+  accTitle: User interaction flow
+  accDescr: Visitors preview an enquiry locally. Authenticated users can submit through RLS; no live test record has been created.
+  Browse["BROWSE PROPERTY<br/>Published listing · public detail URL"]
+  Draft["ENTER ENQUIRY<br/>Name · email · message"]
+  Validate["VALIDATE<br/>Zod · inventory association"]
+  Error["FIELD ERRORS<br/>Associated descriptions<br/>Focus first invalid field"]
+  Preview["REVIEW PREVIEW<br/>Nothing sent or saved<br/>Edit or clear draft"]
+  Auth["ACCOUNT ACCESS<br/>Supabase login / confirmation<br/>Verified current user before write"]
+  Send["SECURE SUBMISSION<br/>Four permitted input columns<br/>Server-owned ID / user / status / time"]
+  Result["RESULT HANDLING<br/>Saved / rejected / uncertain response<br/>No email delivery or automatic retry"]
+  Browse --> Draft
+  Draft --> Validate
+  Validate -->|Invalid| Error
+  Error --> Draft
+  Validate -->|Valid| Preview
+  Preview -->|Edit| Draft
+  Preview --> Auth
+  Auth --> Send
+  Send --> Result
+  classDef default fill:#ffffff,stroke:#ccd3dc,color:#172033,stroke-width:1.5px;

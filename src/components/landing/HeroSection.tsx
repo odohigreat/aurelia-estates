@@ -1,6 +1,5 @@
 import { motion, type Variants } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Button } from '../ui/Button';
 
 export function HeroSection() {
   const containerVariants = {
@@ -23,59 +22,65 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Background Video or Parallax Image */}
+    <section className="hero-section relative w-full min-h-[600px] sm:min-h-[640px] lg:min-h-[620px] flex items-center overflow-hidden bg-white border-b border-border/60">
+      {/* Responsive, high-priority estate image */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2500&q=80"
-          alt="Ultra Luxury Estate"
-          className="w-full h-full object-cover opacity-[0.15] scale-105 animate-[slide-up_30s_ease-in-out_infinite_alternate]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+        <picture className="contents">
+          {/* Preserve the centre crop on tall screens without transferring off-screen sides.
+              Sizes follow the hero's 600 / 640 / 620px minimum heights and object-cover scaling. */}
+          <source
+            media="(max-width: 767px) and (max-aspect-ratio: 2/3)"
+            srcSet="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=640&h=800&q=80 640w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=960&h=1200&q=80 960w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=1280&h=1600&q=80 1280w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=1600&h=2000&q=80 1600w"
+            sizes="(min-width: 640px) max(100vw, 512px), max(100vw, 480px)"
+          />
+          <img
+            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2500&q=80"
+            srcSet="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=960&q=80 960w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1280&q=80 1280w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80 1600w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80 1920w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2500&q=80 2500w"
+            sizes="(min-width: 1024px) max(100vw, 935px), (min-width: 640px) max(100vw, 965px), max(100vw, 905px)"
+            width={2500}
+            height={1659}
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            alt="Contemporary residence with landscaped grounds"
+            className="w-full h-full object-cover"
+          />
+        </picture>
+        <div className="absolute inset-0 bg-[#102536]/65" />
       </div>
 
-      {/* Decorative Orbs */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 2, ease: "easeOut" }}
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"
-      />
-
-      <div className="relative z-10 max-w-5xl mx-auto px-4 text-center pt-6">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-8"
+          className="max-w-4xl mx-auto space-y-7 text-center"
         >
-          {/* <motion.div variants={itemVariants}>
-            <span className="inline-block px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs uppercase tracking-widest font-semibold mb-4">
-              Institutional Grade Platform
-            </span>
-          </motion.div> */}
-
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white drop-shadow-2xl leading-[1.1]">
-            The Future of <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#e8c558] to-primary">Ultra-Luxury</span> <br />Real Estate Wealth
-          </motion.h1>
-
-          <motion.p variants={itemVariants} className="text-xl md:text-2xl text-slate-light max-w-3xl mx-auto font-light leading-relaxed">
-            Gain exclusive access to off-market global assets. Leverage proprietary predictive valuation algorithms and seamless KYC compliance.
+          <motion.p variants={itemVariants} className="text-white text-[10px] sm:text-xs font-medium uppercase tracking-[0.24em]">
+            International residences · Property insights
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-            <Link to="/login">
-              <Button size="lg" className="h-14 px-10 text-lg font-semibold rounded-md shadow-[0_0_15px_rgba(212,175,55,0.15)] hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] transition-shadow">
-                Request Exclusive Access
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button size="lg" variant="outline" className="h-14 px-10 text-lg font-semibold rounded-md shadow-[0_0_15px_rgba(212,175,55,0.15)] hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] transition-shadow">
-                Sign In to Portal
-              </Button>
+          <motion.h1 variants={itemVariants} className="font-display text-[2.75rem] sm:text-6xl lg:text-[4.5rem] xl:text-[5rem] font-normal tracking-tight text-white leading-[1.06]">
+            Properties of distinction.<br /><span className="italic text-[#f5e5c6] text-[0.8em]">Details that matter.</span>
+          </motion.h1>
+
+          <motion.p variants={itemVariants} className="text-sm sm:text-base text-white/95 max-w-lg mx-auto leading-[1.8]">
+            Browse international residences, compare property details and explore illustrative financial scenarios.
+          </motion.p>
+
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-3">
+            <a href="#residences" className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-white text-ink text-sm font-medium transition-colors hover:bg-[#f5e5c6]">
+              Explore properties
+            </a>
+            <Link to="/login" className="inline-flex items-center justify-center h-12 px-8 rounded-md border border-white/60 text-white bg-transparent text-sm font-medium transition-colors hover:bg-white/10">
+              Sign in
             </Link>
           </motion.div>
         </motion.div>
+      </div>
+      <div className="hidden lg:flex absolute bottom-7 right-10 px-4 py-2 items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-white/95">
+        <span className="w-12 h-px bg-white/60" aria-hidden="true" />
+        Architecture. Location. Detail.
       </div>
     </section>
   );

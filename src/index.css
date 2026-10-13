@@ -3,8 +3,32 @@
 @tailwind utilities;
 
 @layer base {
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  input, select, textarea {
+    min-width: 0;
+  }
   body {
-    @apply bg-background text-gray-200 antialiased font-sans selection:bg-primary selection:text-background;
+    @apply bg-background text-ink antialiased font-sans selection:bg-primary selection:text-background;
+  }
+
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid theme('colors.primary.DEFAULT') !important;
+    outline-offset: 3px;
+  }
+
+  .hero-section :focus-visible {
+    outline-color: #ffffff !important;
+  }
+
+  #residences a:focus-visible {
+    outline-color: #66512e !important;
+  }
+
+  .asset-dialog::backdrop {
+    background: transparent;
   }
   
   /* Custom scrollbar for webkit */
@@ -16,16 +40,76 @@
     @apply bg-background;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-surface-hover rounded-full;
+    @apply bg-slate-muted rounded-full;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-muted;
+    @apply bg-ink;
+  }
+}
+
+.feature-strip-track {
+  display: flex;
+  width: max-content;
+  animation: feature-strip-scroll 38s linear infinite;
+}
+
+.feature-strip-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4rem;
+  padding-right: 4rem;
+  white-space: nowrap;
+}
+
+.feature-strip:hover .feature-strip-track,
+.feature-strip:focus-within .feature-strip-track {
+  animation-play-state: paused;
+}
+
+@keyframes feature-strip-scroll {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-strip-track {
+    width: 100%;
+    animation: none;
+  }
+
+  .feature-strip-group {
+    width: 100%;
+    flex-shrink: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem 3rem;
+    padding: 0 1.5rem;
+    white-space: normal;
+  }
+
+  .feature-strip-group li {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .feature-strip-copy {
+    display: none;
+  }
+
+  /* Keep loading spinners/pulses, but stop decorative CSS movement. */
+  [class*='animate-']:not(.animate-spin):not(.animate-pulse) {
+    animation: none !important;
+  }
+
+  *, *::before, *::after {
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-surface/60 backdrop-blur-md border border-border/50 shadow-xl;
+    @apply bg-white border border-border/70;
   }
   
   .text-gradient {

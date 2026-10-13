@@ -1,42 +1,31 @@
 import * as React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useProperties } from './useProperties';
 import { PropertyFilter } from './PropertyFilter';
 import { Card, CardContent } from '../../components/ui/Card';
 import { MapPin, TrendingUp, Home } from 'lucide-react';
-import { DUMMY_PROPERTIES } from './dummyData';
 import { AssetDetailsModal } from './AssetDetailsModal';
 import type { Property } from '../../types';
-
-// Simulated API fetch
-const fetchProperties = async (): Promise<Property[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(DUMMY_PROPERTIES), 800);
-  });
-};
+import { useSearchParams } from 'react-router-dom';
+import { DEFAULT_FILTERS, filterProperties, parsePropertyFilters, propertyFilterChoices, serializePropertyFilters, type PropertyFilters } from './propertyFilters';
 
 export const PropertyGrid = React.memo(() => {
-  const [activeTier, setActiveTier] = React.useState('All');
   const [selectedProperty, setSelectedProperty] = React.useState<Property | null>(null);
-
-  const { data: properties, isLoading } = useQuery({
-    queryKey: ['properties'],
-    queryFn: fetchProperties,
-    staleTime: 60000,
-  });
-
-  const handleTierChange = React.useCallback((tier: string) => {
-    setActiveTier(tier);
-  }, []);
-
-  const filteredProperties = React.useMemo(() => {
-    if (!properties) return [];
-    if (activeTier === 'All') return properties;
-    return properties.filter(p => p.tier === activeTier);
-  }, [properties, activeTier]);
+  const [params, setParams] = useSearchParams();
+  const { data: properties, isLoading, isError, error, refetch } = useProperties();
+  const filters = parsePropertyFilters(params, properties ?? []);
+  const choices = propertyFilterChoices(properties ?? []);
+  const filteredProperties = filterProperties(properties ?? [], filters);
+  const changeFilters = (changes: Partial<PropertyFilters>, replace = false) => {
+    setParams(serializePropertyFilters({ ...filters, ...changes }, params), { replace });
+  };
+  const resetFilters = () => setParams(serializePropertyFilters(DEFAULT_FILTERS, params));
 
   return (
     <div className="space-y-6">
-      <PropertyFilter activeTier={activeTier} onTierChange={handleTierChange} />
+      <PropertyFilter filters={filters} choices={choices} onChange={changeFilters} onReset={resetFilters} />
+      <p role="status" aria-live="polite" className="text-sm text-slate-muted">
+        {isLoading ? 'Loading properties…' : isError ? 'Properties could not be loaded.' : `${filteredProperties.length} of ${properties?.length ?? 0} properties match`}
+      </p>
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -44,32 +33,50 @@ export const PropertyGrid = React.memo(() => {
             <Card key={i} className="h-96 animate-pulse bg-surface-hover border-border" />
           ))}
         </div>
+      ) : isError ? (
+        <div role="alert" className="rounded-xl border border-border bg-surface p-6 text-slate-light">
+          <p>{error?.message ?? 'Unable to load the property listings. Please try again.'}</p>
+          <button type="button" className="mt-4 text-primary" onClick={() => void refetch()}>Retry loading</button>
+        </div>
+      ) : filteredProperties.length === 0 ? (
+        <div className="rounded-xl border border-border bg-surface p-6 text-slate-light">
+          <p>No properties match these filters.</p>
+          <button type="button" className="mt-4 text-primary" onClick={resetFilters}>Clear filters</button>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 animate-fade-in">
           {filteredProperties.map(property => (
             <Card
               key={property.id}
-              className="overflow-hidden group hover:border-primary/50 transition-all duration-300 cursor-pointer"
-              onClick={() => setSelectedProperty(property)}
+              className="relative min-w-0 overflow-hidden group rounded-2xl hover:border-accent/50 hover:shadow-md transition-[border-color,box-shadow] duration-200 cursor-pointer"
             >
-              <div className="relative h-64 overflow-hidden">
+              <button
+                type="button"
+                aria-label={`View details for ${property.title}, ${property.location.city}`}
+                aria-haspopup="dialog"
+                className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+                onClick={(event) => {
+                  // Capture a consistent opener even in browsers that do not focus buttons on pointer clicks.
+                  event.currentTarget.focus({ preventScroll: true });
+                  setSelectedProperty(property);
+                }}
+              />
+              <div className="relative aspect-[4/3] sm:aspect-[16/11] overflow-hidden">
                 <img
                   src={property.images[0]}
-                  alt={property.title}
+                  alt={`Illustrative property image for ${property.title}`}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                 />
-                <div className="absolute top-4 left-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-primary border border-primary/20">
+                <div className="absolute top-4 left-4 bg-white/95 px-3 py-1 rounded-full text-xs font-medium text-primary border border-primary/20">
                   {property.tier}
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                  <h3 className="text-xl font-bold text-white bg-black/60 backdrop-blur-md px-4 py-2 rounded-lg">{property.title}</h3>
                 </div>
               </div>
               <CardContent className="p-5 space-y-4">
-                <div className="flex justify-between items-center pb-4 border-b border-border/50">
-                  <div className="text-xl text-white">
+                <h3 className="font-display text-2xl leading-snug font-normal text-ink">{property.title}</h3>
+                <div className="flex flex-col items-start gap-2 pb-4 border-b border-border/50">
+                  <div className="text-xl font-semibold tabular-nums tracking-tight text-ink">
                     {new Intl.NumberFormat('en-US', { style: 'currency', currency: property.currency, maximumFractionDigits: 0 }).format(property.price)}
                   </div>
                   <div className="flex items-center text-slate-muted text-sm">
@@ -78,17 +85,17 @@ export const PropertyGrid = React.memo(() => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-3 gap-3 text-sm">
                   <div className="flex flex-col space-y-1">
-                    <span className="text-slate-muted flex items-center"><Home className="w-3 h-3 mr-1" /> Sqft</span>
-                    <span className="text-gray-200">{property.metrics.sqft.toLocaleString()}</span>
+                    <span className="text-xs text-slate-muted flex items-center"><Home className="w-3 h-3 mr-1" /> Sq ft</span>
+                    <span className="text-ink font-medium tabular-nums">{property.metrics.sqft.toLocaleString()}</span>
                   </div>
                   <div className="flex flex-col space-y-1">
-                    <span className="text-slate-muted flex items-center"><TrendingUp className="w-3 h-3 mr-1" /> Cap Rate</span>
-                    <span className="text-emerald-400">{property.metrics.capRate}%</span>
+                    <span className="text-xs text-slate-muted flex items-center"><TrendingUp className="w-3 h-3 mr-1" /> Cap rate</span>
+                    <span className="text-emerald-700">{property.metrics.capRate}%</span>
                   </div>
                   <div className="flex flex-col space-y-1">
-                    <span className="text-slate-muted">Forecast</span>
+                    <span className="text-xs text-slate-muted">Scenario</span>
                     <span className="text-primary">+{property.metrics.appreciationForecast}%</span>
                   </div>
                 </div>

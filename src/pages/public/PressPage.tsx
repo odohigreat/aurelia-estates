@@ -2,18 +2,18 @@ import { StaticPageHeader } from '../../components/ui/StaticPageHeader';
 import { Card, CardContent } from '../../components/ui/Card';
 
 const PRESS_RELEASES = [
-  { date: "Oct 12, 2026", title: "Aurelia Estates Surpasses $5B in Off-Market Transacted Value", source: "The Financial Times" },
-  { date: "Aug 04, 2026", title: "How Quantitative Algorithms are Eating the Luxury Real Estate Market", source: "Bloomberg" },
-  { date: "May 22, 2026", title: "Aurelia Launches Institutional KYC API for Family Offices", source: "TechCrunch" },
-  { date: "Jan 15, 2026", title: "The New Standard in Global Wealth Preservation", source: "Forbes" }
+  { date: "12 October 2026", title: "Introducing the Aurelia property collection", source: "Example editorial" },
+  { date: "4 August 2026", title: "Understanding illustrative property figures", source: "Example feature" },
+  { date: "22 May 2026", title: "A guide to the identity review preview", source: "Example article" },
+  { date: "15 January 2026", title: "Exploring the property portfolio", source: "Example article" }
 ];
 
 export default function PressPage() {
   return (
     <div className="pb-24">
-      <StaticPageHeader 
-        title="Press & Media" 
-        subtitle="Aurelia Estates in the global financial press."
+      <StaticPageHeader
+        title="Press and media"
+        subtitle="The articles and dates below are illustrative. They do not represent published coverage or independent endorsements."
       />
       <div className="max-w-5xl mx-auto px-4 mt-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -24,15 +24,15 @@ export default function PressPage() {
                   <span className="text-primary text-sm font-bold tracking-widest uppercase">{pr.source}</span>
                   <span className="text-slate-muted text-sm">{pr.date}</span>
                 </div>
-                <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">{pr.title}</h3>
+                <h3 className="text-xl font-bold text-ink group-hover:text-primary transition-colors">{pr.title}</h3>
               </CardContent>
             </Card>
           ))}
         </div>
-        
+
         <div className="mt-24 text-center">
-          <p className="text-slate-muted mb-4">For all media inquiries and access to our press kit.</p>
-          <a href="mailto:press@aurelia.com" className="text-primary hover:text-white font-bold text-xl transition-colors">press@aurelia.com</a>
+          <p className="text-slate-muted mb-4">A verified press contact and press kit are not currently available.</p>
+          <span className="text-primary font-bold text-xl">press@aurelia.example · Example address only</span>
         </div>
       </div>
     </div>

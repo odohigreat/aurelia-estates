@@ -3,32 +3,32 @@ import { StaticPageHeader } from '../../components/ui/StaticPageHeader';
 export default function CookiesPage() {
   return (
     <div className="pb-24">
-      <StaticPageHeader 
-        title="Cookie Settings" 
-        subtitle="Manage your localized preferences."
+      <StaticPageHeader
+        title="Cookie information"
+        subtitle="Information about browser storage and external providers."
       />
       <div className="max-w-4xl mx-auto px-4 mt-16 prose prose-invert prose-slate">
         <p className="text-slate-light mb-12 text-lg">
-          We utilize essential cookies to maintain secure sessions and encrypted KYC workflows. Our use of cookies is strictly limited to functionality and platform security.
+          The website uses local storage for Supabase authentication sessions and email-confirmation handling. Unsaved form entries remain in browser memory. The application does not explicitly set cookies, and cookie preference controls are not currently available.
         </p>
 
-        <h2 className="text-white text-2xl font-bold mb-4">Essential Cookies</h2>
+        <h2 className="text-ink text-2xl font-bold mb-4">Sessions and form entries</h2>
         <p className="text-slate-light mb-8">
-          These cookies are required for the platform to function. They authenticate your session, enforce our Web Application Firewall (WAF), and maintain your state across the dashboard. They cannot be disabled.
+          Account sessions can be restored after a reload using browser storage. Signing out clears account access in the current browser; it does not delete your account or submitted enquiries, or sign out other devices. Identity review and unsent enquiry drafts reset on reload. Property enquiries submitted while signed in are stored in Supabase rather than browser storage.
         </p>
 
-        <h2 className="text-white text-2xl font-bold mb-4">Analytical Cookies</h2>
+        <h2 className="text-ink text-2xl font-bold mb-4">Analytics and external resources</h2>
         <p className="text-slate-light mb-8">
-          We use anonymized, aggregated telemetry to understand how our institutional clients interact with our predictive charts. This allows us to optimize the rendering speed of complex data sets. No personally identifiable information (PII) is tracked.
+          The website has no connected visitor analytics or tracking service. It loads fonts from Google Fonts and images from Unsplash. Hosting and resource providers may have their own logging, storage or cookie practices, which have not been verified. Those practices and any consent requirements need to be confirmed before commercial use.
         </p>
 
         <div className="bg-surface border border-border/50 p-6 rounded-xl mt-12 flex items-center justify-between">
           <div>
-            <h3 className="text-white font-bold">Analytical Tracking</h3>
-            <p className="text-slate-muted text-sm">Help us optimize platform performance.</p>
+            <h3 className="text-ink font-bold">Cookie preferences</h3>
+            <p id="cookie-preferences-status" className="text-slate-muted text-sm">Cookie preference controls are not currently available.</p>
           </div>
-          <button className="bg-primary text-background px-6 py-2 rounded-full font-bold text-sm">
-            Opt Out
+          <button type="button" aria-disabled="true" aria-describedby="cookie-preferences-status" className="bg-primary text-background px-6 py-2 rounded-full font-bold text-sm">
+            Unavailable
           </button>
         </div>
       </div>

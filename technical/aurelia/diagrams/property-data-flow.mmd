@@ -1,0 +1,22 @@
+flowchart TB
+  accTitle: Property data flow
+  accDescr: Published Supabase rows are validated and mapped to the shared model. Full inventory drives totals; filters only affect displayed cards.
+  Database["SUPABASE PROPERTIES<br/>Published rows only"]
+  Read["READ AND VALIDATE<br/>REST · pagination · cancellation<br/>Zod database mapping"]
+  Query["SHARED QUERY<br/>React Query · 60-second stale window<br/>Explicit loading / empty / error states"]
+  Summary["FULL INVENTORY TOTALS<br/>Separate USD / EUR / CHF<br/>Unweighted cap-rate mean"]
+  Filter["COMBINED FILTERS<br/>Text · tier · country · currency · bedrooms"]
+  URL["URL STATE<br/>Validated parameters and history"]
+  Cards["FILTERED CARDS<br/>Native keyboard activation"]
+  Details["SELECTED PROPERTY<br/>Public route or native dialog<br/>Shared detail content"]
+  Enquiry["ENQUIRY CONTEXT<br/>Existing property and inventory<br/>Validated local preview"]
+  Database --> Read
+  Read --> Query
+  Query --> Summary
+  Query --> Filter
+  URL <--> Filter
+  Filter --> Cards
+  Cards --> Details
+  Query --> Details
+  Details --> Enquiry
+  classDef default fill:#ffffff,stroke:#ccd3dc,color:#172033,stroke-width:1.5px;

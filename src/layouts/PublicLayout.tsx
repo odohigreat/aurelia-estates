@@ -4,7 +4,7 @@ import { Footer } from '../components/landing/Footer';
 
 export default function PublicLayout() {
   return (
-    <div className="min-h-screen bg-background text-gray-200 selection:bg-primary selection:text-background flex flex-col">
+    <div className="min-h-screen bg-background text-gray-800 selection:bg-primary selection:text-background flex flex-col">
       <PublicNavbar />
       <main className="flex-grow">
         <Outlet />
