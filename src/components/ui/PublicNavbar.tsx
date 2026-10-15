@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useId, useCallback } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { Logo } from './Logo';
 
 export function PublicNavbar() {
@@ -10,27 +9,24 @@ export function PublicNavbar() {
   return <PublicNavbarMenu key={location.pathname} />;
 }
 
-function MobileDrawer({ drawerRef, id, children }: {
+// Always mounted so CSS can slide it in and out; inert and hidden from assistive tech while closed.
+function MobileDrawer({ drawerRef, id, open, children }: {
   drawerRef: RefObject<HTMLElement | null>;
   id: string;
+  open: boolean;
   children: ReactNode;
 }) {
-  const isPresent = useIsPresent();
   return (
-    <motion.nav
+    <nav
       ref={drawerRef}
       id={id}
       aria-label="Mobile navigation"
-      aria-hidden={!isPresent}
-      inert={!isPresent}
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white border-l border-border shadow-lg z-40 lg:hidden flex flex-col overflow-y-auto pt-24 px-6 pb-6"
+      aria-hidden={!open}
+      inert={!open}
+      className={`fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white border-l border-border shadow-lg z-40 lg:hidden flex flex-col overflow-y-auto pt-24 px-6 pb-6 transition-[transform,visibility] duration-300 ease-out ${open ? 'translate-x-0 visible' : 'translate-x-full invisible'}`}
     >
       {children}
-    </motion.nav>
+    </nav>
   );
 }
 
@@ -125,47 +121,37 @@ function PublicNavbarMenu() {
         </div>
       </nav>
 
-      {/* Mobile Sidebar Drawer */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-gray-200/70 z-40 lg:hidden"
-              onClick={closeMenu}
-            />
+      {/* Mobile drawer backdrop */}
+      <div
+        aria-hidden="true"
+        className={`fixed inset-0 bg-gray-200/70 z-40 lg:hidden transition-[opacity,visibility] duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        onClick={closeMenu}
+      />
 
-            {/* Sidebar */}
-            <MobileDrawer drawerRef={drawerRef} id={drawerId}>
-              <div className="flex flex-col space-y-5 flex-grow">
-                {NAV_LINKS.map((link) => (
-                  <Link 
-                    key={link.path} 
-                    to={link.path} 
-                    className="font-display text-2xl font-normal text-ink border-b border-border/70 pb-4 hover:text-accent transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
+      {/* Mobile drawer */}
+      <MobileDrawer drawerRef={drawerRef} id={drawerId} open={isOpen}>
+        <div className="flex flex-col space-y-5 flex-grow">
+          {NAV_LINKS.map((link) => (
+            <Link 
+              key={link.path} 
+              to={link.path} 
+              className="font-display text-2xl font-normal text-ink border-b border-border/70 pb-4 hover:text-accent transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
 
-              <div className="flex flex-col space-y-4 pt-8 border-t border-border/50">
-                <Link to="/signup" onClick={() => setIsOpen(false)}>
-                  <span className="flex h-12 w-full items-center justify-start rounded-md px-4 text-lg font-medium text-gray-700 transition-colors hover:bg-surface-hover">Create account</span>
-                </Link>
-                <Link to="/login" onClick={() => setIsOpen(false)}>
-                  <span className="flex h-12 w-full items-center justify-center rounded-md bg-primary px-4 text-lg font-medium text-background transition-colors hover:bg-primary-hover">Sign in</span>
-                </Link>
-              </div>
-            </MobileDrawer>
-          </>
-        )}
-      </AnimatePresence>
+        <div className="flex flex-col space-y-4 pt-8 border-t border-border/50">
+          <Link to="/signup" onClick={() => setIsOpen(false)}>
+            <span className="flex h-12 w-full items-center justify-start rounded-md px-4 text-lg font-medium text-gray-700 transition-colors hover:bg-surface-hover">Create account</span>
+          </Link>
+          <Link to="/login" onClick={() => setIsOpen(false)}>
+            <span className="flex h-12 w-full items-center justify-center rounded-md bg-primary px-4 text-lg font-medium text-background transition-colors hover:bg-primary-hover">Sign in</span>
+          </Link>
+        </div>
+      </MobileDrawer>
     </>
   );
 }

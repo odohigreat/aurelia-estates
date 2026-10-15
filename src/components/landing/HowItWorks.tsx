@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { UserCheck, Search, Key } from 'lucide-react';
 
 export function HowItWorks() {
@@ -32,14 +31,14 @@ export function HowItWorks() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {steps.map(step => (
-            <motion.div key={step.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="rounded-xl border border-border/80 bg-white p-6">
+            <div key={step.id} className="rounded-xl border border-border/80 bg-white p-6">
               <div className="flex items-center justify-between mb-6">
                 <span className="text-primary text-xs tracking-[0.2em]">{step.id}</span>
                 <step.icon className="w-5 h-5 text-accent" />
               </div>
               <h3 className="text-xl font-medium text-ink mb-3">{step.title}</h3>
               <p className="text-sm text-slate-light leading-relaxed">{step.description}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

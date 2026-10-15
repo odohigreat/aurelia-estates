@@ -1,5 +1,4 @@
 import { useState, useId } from 'react';
-import { motion, AnimatePresence, useReducedMotion, useIsPresent } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
 
 const FAQS = [
@@ -25,33 +24,32 @@ const FAQS = [
   }
 ];
 
-function FAQAnswer({ id, labelledBy, reducedMotion, answer }: {
+// Stays mounted so the CSS grid-rows transition can open and close it; inert while closed.
+function FAQAnswer({ id, labelledBy, open, answer }: {
   id: string;
   labelledBy: string;
-  reducedMotion: boolean | null;
+  open: boolean;
   answer: string;
 }) {
-  const isPresent = useIsPresent();
   return (
-    <motion.div
+    <div
       id={id}
       role="region"
       aria-labelledby={labelledBy}
-      aria-hidden={!isPresent}
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: 'auto', opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: reducedMotion ? 0 : 0.3, ease: 'easeInOut' }}
+      aria-hidden={!open}
+      inert={!open}
+      className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
     >
-      <div className="px-1 pb-6 text-slate-light text-sm leading-relaxed">{answer}</div>
-    </motion.div>
+      <div className="overflow-hidden">
+        <div className="px-1 pb-6 text-slate-light text-sm leading-relaxed">{answer}</div>
+      </div>
+    </div>
   );
 }
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const accordionId = useId();
-  const reducedMotion = useReducedMotion();
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -85,16 +83,12 @@ export function FAQSection() {
                 </span>
               </button>
               
-              <AnimatePresence>
-                {openIndex === idx && (
-                  <FAQAnswer
-                    id={`${accordionId}-panel-${idx}`}
-                    labelledBy={`${accordionId}-button-${idx}`}
-                    reducedMotion={reducedMotion}
-                    answer={faq.answer}
-                  />
-                )}
-              </AnimatePresence>
+              <FAQAnswer
+                id={`${accordionId}-panel-${idx}`}
+                labelledBy={`${accordionId}-button-${idx}`}
+                open={openIndex === idx}
+                answer={faq.answer}
+              />
             </div>
           ))}
         </div>

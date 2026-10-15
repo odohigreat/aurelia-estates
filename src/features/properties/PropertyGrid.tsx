@@ -3,10 +3,14 @@ import { useProperties } from './useProperties';
 import { PropertyFilter } from './PropertyFilter';
 import { Card, CardContent } from '../../components/ui/Card';
 import { MapPin, TrendingUp, Home } from 'lucide-react';
-import { AssetDetailsModal } from './AssetDetailsModal';
 import type { Property } from '../../types';
 import { useSearchParams } from 'react-router-dom';
 import { DEFAULT_FILTERS, filterProperties, parsePropertyFilters, propertyFilterChoices, serializePropertyFilters, type PropertyFilters } from './propertyFilters';
+
+// The modal (and Framer Motion) is only needed after a click, so it loads separately and is
+// warmed during idle time to keep the first open instant.
+const loadAssetDetailsModal = () => import('./AssetDetailsModal');
+const AssetDetailsModal = React.lazy(() => loadAssetDetailsModal().then(module => ({ default: module.AssetDetailsModal })));
 
 export const PropertyGrid = React.memo(() => {
   const [selectedProperty, setSelectedProperty] = React.useState<Property | null>(null);
@@ -19,6 +23,15 @@ export const PropertyGrid = React.memo(() => {
     setParams(serializePropertyFilters({ ...filters, ...changes }, params), { replace });
   };
   const resetFilters = () => setParams(serializePropertyFilters(DEFAULT_FILTERS, params));
+  React.useEffect(() => {
+    const warm = () => { void loadAssetDetailsModal().catch(() => undefined); };
+    if (typeof window.requestIdleCallback !== 'function') {
+      const timer = window.setTimeout(warm, 2000);
+      return () => window.clearTimeout(timer);
+    }
+    const idle = window.requestIdleCallback(warm, { timeout: 4000 });
+    return () => window.cancelIdleCallback(idle);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -106,10 +119,12 @@ export const PropertyGrid = React.memo(() => {
       )}
 
       {selectedProperty && (
-        <AssetDetailsModal
-          property={selectedProperty}
-          onClose={() => setSelectedProperty(null)}
-        />
+        <React.Suspense fallback={null}>
+          <AssetDetailsModal
+            property={selectedProperty}
+            onClose={() => setSelectedProperty(null)}
+          />
+        </React.Suspense>
       )}
     </div>
   );

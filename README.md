@@ -39,7 +39,7 @@ Versions below are resolved versions in `package-lock.json`, rather than depende
 | Icons | Lucide React | 1.21.0 |
 | Class composition | clsx / tailwind-merge | 2.1.1 / 3.6.0 |
 
-`App.tsx` supplies the query client, router, Suspense fallback and reduced-motion configuration. Public and dashboard layouts share navigation conventions. Pages are lazy imports; Vite automatically splits their dependency graph. Zustand reflects Supabase session changes and holds UI state. React Query supplies one published-inventory cache, using native GET requests and Zod field mapping. The Auth SDK is dynamically imported separately from the application shell. Enquiry draft/preview state stays local to the form.
+`App.tsx` supplies the query client, router and Suspense fallback; each layout adds its own Suspense boundary so navigation paints while a route chunk loads. Pages and the dashboard layout are lazy imports; Vite automatically splits their dependency graph. Public pages use CSS transitions, while Framer Motion and its reduced-motion configuration load only with the dashboard, and Recharts loads only when a chart is shown. Zustand reflects Supabase session changes and holds UI state. React Query supplies one published-inventory cache, using native GET requests and Zod field mapping. The Auth SDK is dynamically imported separately from the application shell. Enquiry draft/preview state stays local to the form.
 
 The diagrams below describe the current Supabase property, authentication and enquiry architecture.
 
