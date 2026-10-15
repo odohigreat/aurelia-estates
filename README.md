@@ -47,6 +47,109 @@ The diagrams below describe the current Supabase property, authentication and en
 
 [Editable Mermaid source](technical/aurelia/diagrams/application-architecture.mmd)
 
+```mermaid
+flowchart LR
+  subgraph UI["User / Interface"]
+    direction TB
+    LANDING["SelectedResidences (browser)<br/>landing listing cards"]
+    PORTFOLIO["DashboardLayout + PortfolioPage (browser)<br/>MetricCards · PropertyGrid · PropertyFilter"]
+    DETAILS["PropertyDetailsPage / AssetDetailsModal (browser)<br/>PropertyDetailsContent · Recharts cash flow"]
+    ENQUIRY["PropertyEnquiryForm (browser)<br/>draft → preview → send"]
+    AUTHPAGES["LoginPage / SignupPage / AuthCallbackPage (browser)<br/>Zod loginSchema / signupSchema"]
+  end
+
+  subgraph LOGIC["Application Logic"]
+    direction TB
+    ROUTER["App.tsx routes (browser)<br/>React.lazy pages · Suspense · ProtectedRoute"]
+    FILTERS["propertyFilters.ts (browser)<br/>parsePropertyFilters · filterProperties"]
+    SUMMARY["summarizeProperties (browser)<br/>valueByCurrency · meanCapRate · count"]
+    VALIDATE["findProperty + createEnquirySchema (browser)<br/>inventory-linked Zod enquiry rules"]
+  end
+
+  subgraph STATE["State Management (client state only)"]
+    direction TB
+    URLSTATE["URL search params (browser)<br/>useSearchParams · q / tier / country / currency / bedrooms"]
+    QUERY["useProperties (browser)<br/>React Query key ['properties'] · staleTime 60s"]
+    UISTORE["useUIStore (browser)<br/>Zustand, in memory · authStatus · user"]
+  end
+
+  subgraph API["API / Integrations"]
+    direction TB
+    RESTAPI["fetchPublishedProperties (browser)<br/>native fetch GET · Zod propertyRows"]
+    SDK["getSupabase client (browser)<br/>PKCE · authActions · submitPropertyEnquiry"]
+  end
+
+  subgraph EXT["External Services / Data"]
+    direction TB
+    SUPABASE["Supabase (server)<br/>Auth · REST properties · property_enquiries RLS"]
+    STORAGE["Browser localStorage (browser)<br/>Supabase session, persistSession: true"]
+    UNSPLASH["Unsplash images (server)<br/>images.unsplash.com"]
+    VERCEL["Vercel SPA hosting (server)<br/>vercel.json /(.*) → /index.html"]
+  end
+
+  VERCEL -->|"index.html for any path"| ROUTER
+  ROUTER -->|"/"| LANDING
+  ROUTER -->|"/properties/:propertyId"| DETAILS
+  ROUTER -->|"/login · /signup · /auth/callback"| AUTHPAGES
+  ROUTER -->|"/dashboard/portfolio when authenticated"| PORTFOLIO
+  ROUTER -. "Navigate /login when anonymous" .-> AUTHPAGES
+  UISTORE -->|"authStatus"| ROUTER
+
+  PORTFOLIO -->|"setParams(serializePropertyFilters)"| URLSTATE
+  URLSTATE -->|"?q=&tier=&country=&currency=&bedrooms="| FILTERS
+  QUERY -->|"full inventory"| FILTERS
+  FILTERS -->|"filtered cards"| PORTFOLIO
+  QUERY -->|"full inventory"| SUMMARY
+  SUMMARY -->|"currency totals · mean cap rate · count"| PORTFOLIO
+  PORTFOLIO -->|"selectedProperty → modal"| DETAILS
+
+  QUERY -->|"queryFn({ signal })"| RESTAPI
+  RESTAPI -->|"GET /rest/v1/properties?is_published=eq.true"| SUPABASE
+  SUPABASE -->|"JSON rows, 100 per page"| RESTAPI
+  RESTAPI -->|"zod.safeParse(rows) → Property[]"| QUERY
+  RESTAPI -. "PropertyReadError: no retry for configuration / data" .-> QUERY
+  QUERY -. "isError → Retry loading (refetch)" .-> PORTFOLIO
+  QUERY -->|"published properties"| LANDING
+  QUERY -->|"inventory"| DETAILS
+  LANDING -->|"Link /properties/:propertyId"| DETAILS
+  UNSPLASH -->|"listing photos via images[0]"| LANDING
+  UNSPLASH -->|"listing photos via images[0]"| DETAILS
+
+  DETAILS -->|"propertyId + inventory"| VALIDATE
+  VALIDATE -->|"property or Property not found"| DETAILS
+  DETAILS -->|"property + inventory, keyed by id"| ENQUIRY
+  ENQUIRY -->|"zod.safeParse(values + propertyId)"| VALIDATE
+  VALIDATE -. "field errors → focus first invalid" .-> ENQUIRY
+  VALIDATE -->|"valid draft → preview"| ENQUIRY
+  UISTORE -->|"user · authStatus"| ENQUIRY
+  ENQUIRY -->|"mutate(preview), retry: false"| SDK
+  SDK -. "rejected or uncertain save → error message" .-> ENQUIRY
+
+  AUTHPAGES -->|"signIn · registerAccount · confirmAccount"| SDK
+  SDK -. "authErrorMessage(code)" .-> AUTHPAGES
+  AUTHPAGES -->|"setSession(accountUser)"| UISTORE
+  PORTFOLIO -->|"signOut({ scope: 'local' })"| SDK
+  PORTFOLIO -->|"finishSignOut()"| UISTORE
+  SDK -->|"auth calls · insert 4 enquiry columns"| SUPABASE
+  SDK -->|"persist session"| STORAGE
+  STORAGE -->|"restore → getSession + getUser"| SDK
+  SDK -->|"onAuthStateChange → setSession"| UISTORE
+  SDK -. "restore failure → setAuthError" .-> UISTORE
+
+  classDef ui fill:#E8F1FB,stroke:#4A7BB7,color:#1B2B3F
+  classDef logic fill:#EAF6EC,stroke:#4F9A5C,color:#1D3622
+  classDef state fill:#FFF4E0,stroke:#C8912E,color:#3D2C0C
+  classDef api fill:#F1EAF8,stroke:#8463B0,color:#2C1F3D
+  classDef ext fill:#F3F1EF,stroke:#7A706A,color:#2A2522
+  class LANDING,PORTFOLIO,DETAILS,ENQUIRY,AUTHPAGES ui
+  class ROUTER,FILTERS,SUMMARY,VALIDATE logic
+  class URLSTATE,QUERY,UISTORE state
+  class RESTAPI,SDK api
+  class SUPABASE,STORAGE,UNSPLASH,VERCEL ext
+```
+
+[Architecture document and file-to-diagram map](technical/aurelia/diagrams/architecture.md) · [PNG export](technical/aurelia/diagrams/architecture.png)
+
 ## Project structure and routes
 
 ```text
