@@ -1,26 +1,9 @@
-import { motion, type Variants } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
+// CSS rise only: text stays opaque so it paints immediately and counts for LCP.
+const rise = (step: number) => ({ animationDelay: `${step * 0.2}s` });
+
 export function HeroSection() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
-    },
-  };
-
   return (
     <section className="hero-section relative w-full min-h-[600px] sm:min-h-[640px] lg:min-h-[620px] flex items-center overflow-hidden bg-white border-b border-border/60">
       {/* Responsive, high-priority estate image */}
@@ -50,33 +33,28 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-4xl mx-auto space-y-7 text-center"
-        >
-          <motion.p variants={itemVariants} className="text-white text-[10px] sm:text-xs font-medium uppercase tracking-[0.24em]">
+        <div className="max-w-4xl mx-auto space-y-7 text-center">
+          <p style={rise(0)} className="animate-hero-rise text-white text-[10px] sm:text-xs font-medium uppercase tracking-[0.24em]">
             International residences · Property insights
-          </motion.p>
+          </p>
 
-          <motion.h1 variants={itemVariants} className="font-display text-[2.75rem] sm:text-6xl lg:text-[4.5rem] xl:text-[5rem] font-normal tracking-tight text-white leading-[1.06]">
+          <h1 style={rise(1)} className="animate-hero-rise font-display text-[2.75rem] sm:text-6xl lg:text-[4.5rem] xl:text-[5rem] font-normal tracking-tight text-white leading-[1.06]">
             Properties of distinction.<br /><span className="italic text-[#f5e5c6] text-[0.8em]">Details that matter.</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p variants={itemVariants} className="text-sm sm:text-base text-white/95 max-w-lg mx-auto leading-[1.8]">
+          <p style={rise(2)} className="animate-hero-rise text-sm sm:text-base text-white/95 max-w-lg mx-auto leading-[1.8]">
             Browse international residences, compare property details and explore illustrative financial scenarios.
-          </motion.p>
+          </p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-3">
+          <div style={rise(3)} className="animate-hero-rise flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-3">
             <a href="#residences" className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-white text-ink text-sm font-medium transition-colors hover:bg-[#f5e5c6]">
               Explore properties
             </a>
             <Link to="/login" className="inline-flex items-center justify-center h-12 px-8 rounded-md border border-white/60 text-white bg-transparent text-sm font-medium transition-colors hover:bg-white/10">
               Sign in
             </Link>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
       <div className="hidden lg:flex absolute bottom-7 right-10 px-4 py-2 items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-white/95">
         <span className="w-12 h-px bg-white/60" aria-hidden="true" />

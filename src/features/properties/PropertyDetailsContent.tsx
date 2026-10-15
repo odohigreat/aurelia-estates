@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { useReducedMotion } from 'framer-motion';
 import { MapPin, Building, ShieldCheck, TrendingUp, DollarSign, Activity } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { Property } from '../../types';
 
-import { generateMockCashFlow } from './propertyCashFlow';
+// Recharts is below the fold; load it after the listing content so the page paints first.
+const PropertyCashFlowChart = React.lazy(() => import('./PropertyCashFlowChart'));
 
 export function PropertyDetailsContent({ property, titleId, headingLevel = 'h2', headerAction }: {
   property: Property;
@@ -13,16 +12,11 @@ export function PropertyDetailsContent({ property, titleId, headingLevel = 'h2',
   headerAction?: React.ReactNode;
 }) {
   const Heading = headingLevel;
-  const gradientId = React.useId();
-  const reducedMotion = useReducedMotion();
-  const price = property.price;
-  const cashFlowData = React.useMemo(() => generateMockCashFlow(price), [price]);
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: property.currency, maximumFractionDigits: 0 });
-  const axisFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: property.currency, notation: 'compact', maximumFractionDigits: 1 });
   return <>
             {/* Header Image Area */}
             <div className="relative h-[380px] sm:h-96 w-full flex-shrink-0">
-              <img src={property.images[0]} alt={`Illustrative property image for ${property.title}`} width={800} height={600} decoding="async" className="w-full h-full object-cover" />
+              <img src={property.images[0]} alt={`Illustrative property image for ${property.title}`} width={800} height={600} fetchPriority="high" decoding="async" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
               {headerAction}
               <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
@@ -73,25 +67,9 @@ export function PropertyDetailsContent({ property, titleId, headingLevel = 'h2',
                   <h3 className="font-display text-2xl font-normal text-ink mb-3">Illustrative five-year cash flow</h3>
                   <p className="text-xs leading-relaxed text-slate-light mb-4">This example assumes annual revenue rising from 4% to 6% of the listing value and annual expenses of 1.5%. It is not a prediction of returns.</p>
                   <div className="h-64 w-full min-w-0 bg-surface border border-border/70 rounded-xl p-3 sm:p-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={cashFlowData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#047857" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="#047857" stopOpacity={0}/>
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#dedede" vertical={false} />
-                        <XAxis dataKey="year" stroke="#666666" tick={{fontSize: 12}} axisLine={false} tickLine={false} />
-                        <YAxis stroke="#666666" tick={{fontSize: 12}} axisLine={false} tickLine={false} tickFormatter={(val) => axisFormatter.format(val)} />
-                        <Tooltip
-                          contentStyle={{ backgroundColor: '#ffffff', borderColor: '#d8d8d8', borderRadius: '8px' }}
-                          formatter={(value) => typeof value === 'number' && Number.isFinite(value) ? formatter.format(value) : 'Unavailable'}
-                        />
-                        <Area isAnimationActive={!reducedMotion} type="monotone" dataKey="revenue" name="Scenario revenue" stroke="#047857" strokeWidth={3} fillOpacity={1} fill={`url(#${gradientId})`} />
-                        <Area isAnimationActive={!reducedMotion} type="monotone" dataKey="opex" name="Operating expenses" stroke="#be123c" strokeWidth={2} fill="transparent" strokeDasharray="4 4" />
-                      </AreaChart>
-                    </ResponsiveContainer>
+                    <React.Suspense fallback={<div role="status" aria-busy="true" className="h-full w-full animate-pulse rounded-lg bg-surface-hover"><span className="sr-only">Loading chart…</span></div>}>
+                      <PropertyCashFlowChart price={property.price} currency={property.currency} />
+                    </React.Suspense>
                   </div>
                 </div>
 

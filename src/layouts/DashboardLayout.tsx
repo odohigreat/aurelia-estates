@@ -5,6 +5,7 @@ import { useUIStore } from '../hooks/useStore';
 import { Logo } from '../components/ui/Logo';
 import { signOut } from '../features/auth/authActions';
 import { useQueryClient } from '@tanstack/react-query';
+import { MotionConfig } from 'framer-motion';
 
 export default function DashboardLayout() {
   const location = useLocation();
@@ -64,7 +65,9 @@ export default function DashboardLayout() {
     }
   };
 
+  // Framer Motion is only used inside the dashboard, so its reduced-motion config lives here.
   return (
+    <MotionConfig reducedMotion="user">
     <div className="min-h-screen bg-surface text-gray-800">
       <nav className="border-b border-border/80 bg-white sticky top-0 z-50">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -145,9 +148,12 @@ export default function DashboardLayout() {
         </aside>
       <main className="min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {logoutError && <p role="alert" className="mb-6 text-sm text-rose-700">{logoutError}</p>}
-        <Outlet />
+        <React.Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
+          <Outlet />
+        </React.Suspense>
       </main>
       </div>
     </div>
+    </MotionConfig>
   );
 }

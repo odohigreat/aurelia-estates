@@ -29,18 +29,24 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['"Stack Sans Notch"', 'sans-serif'],
+        sans: ['"Stack Sans Notch"', '"Stack Sans Notch Fallback"', 'sans-serif'],
         display: ['Georgia', 'Times New Roman', 'serif'],
         mono: ['JetBrains Mono', 'Menlo', 'monospace'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
         'slide-up': 'slideUp 0.5s ease-out',
+        // Transform only, so text is painted (and measured for LCP) from the first frame.
+        'hero-rise': 'heroRise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        heroRise: {
+          '0%': { transform: 'translateY(20px)' },
+          '100%': { transform: 'translateY(0)' },
         },
         slideUp: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },

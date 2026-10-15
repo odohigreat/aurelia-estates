@@ -6,9 +6,7 @@ import { ProtectedRoute } from './features/auth/ProtectedRoute';
 import { ScrollToTop } from './components/ui/ScrollToTop';
 
 import PublicLayout from './layouts/PublicLayout';
-import DashboardLayout from './layouts/DashboardLayout';
 import { Loader2 } from 'lucide-react';
-import { MotionConfig } from 'framer-motion';
 
 const LandingPage = React.lazy(() => import('./pages/LandingPage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
@@ -28,9 +26,15 @@ const PrivacyPage = React.lazy(() => import('./pages/public/PrivacyPage'));
 const TermsPage = React.lazy(() => import('./pages/public/TermsPage'));
 const CookiesPage = React.lazy(() => import('./pages/public/CookiesPage'));
 
-// Dashboard Pages
+// Dashboard Pages. The layout is lazy too, so the public shell never loads dashboard code;
+// loading it also starts the default portfolio page so the two chunks download in parallel.
+const loadPortfolioPage = () => import('./pages/PortfolioPage');
+const DashboardLayout = React.lazy(() => {
+  void loadPortfolioPage();
+  return import('./layouts/DashboardLayout');
+});
 const PropertyDetailsPage = React.lazy(() => import('./pages/public/PropertyDetailsPage'));
-const PortfolioPage = React.lazy(() => import('./pages/PortfolioPage'));
+const PortfolioPage = React.lazy(loadPortfolioPage);
 const IntelligencePage = React.lazy(() => import('./pages/IntelligencePage'));
 const CompliancePage = React.lazy(() => import('./pages/CompliancePage'));
 
@@ -52,56 +56,54 @@ const PageLoader = () => (
 
 export default function App() {
   return (
-    <MotionConfig reducedMotion="user">
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AuthProvider>
-          <ScrollToTop />
-          <React.Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Public Layout Routes */}
-              <Route element={<PublicLayout />}>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/properties/:propertyId" element={<PropertyDetailsPage />} />
-                <Route path="/portfolio-access" element={<PortfolioAccessPage />} />
-                <Route path="/analytics" element={<AnalyticsPage />} />
-                <Route path="/compliance-info" element={<ComplianceInfoPage />} />
-                <Route path="/api-docs" element={<ApiDocsPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/careers" element={<CareersPage />} />
-                <Route path="/press" element={<PressPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/cookies" element={<CookiesPage />} />
-              </Route>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+        <ScrollToTop />
+        <React.Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Public Layout Routes */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/properties/:propertyId" element={<PropertyDetailsPage />} />
+              <Route path="/portfolio-access" element={<PortfolioAccessPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/compliance-info" element={<ComplianceInfoPage />} />
+              <Route path="/api-docs" element={<ApiDocsPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/careers" element={<CareersPage />} />
+              <Route path="/press" element={<PressPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/cookies" element={<CookiesPage />} />
+            </Route>
 
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-              <Route path="/auth/callback" element={<AuthCallbackPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/auth/callback" element={<AuthCallbackPage />} />
 
-              {/* Protected Dashboard Routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Navigate to="/dashboard/portfolio" replace />} />
-                <Route path="portfolio" element={<PortfolioPage />} />
-                <Route path="intelligence" element={<IntelligencePage />} />
-                <Route path="compliance" element={<CompliancePage />} />
-              </Route>
+            {/* Protected Dashboard Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to="/dashboard/portfolio" replace />} />
+              <Route path="portfolio" element={<PortfolioPage />} />
+              <Route path="intelligence" element={<IntelligencePage />} />
+              <Route path="compliance" element={<CompliancePage />} />
+            </Route>
 
-              {/* Catch-all redirect */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </React.Suspense>
-          </AuthProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </MotionConfig>
+            {/* Catch-all redirect */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </React.Suspense>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }

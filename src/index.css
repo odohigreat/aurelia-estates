@@ -1,3 +1,14 @@
+/* Metric-matched stand-in shown until Stack Sans Notch loads, so the font swap does not
+   reflow text (layout shift). Values measured from the 400-weight file against Arial. */
+@font-face {
+  font-family: 'Stack Sans Notch Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 104.35%;
+  ascent-override: 95.83%;
+  descent-override: 28.75%;
+  line-gap-override: 0%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

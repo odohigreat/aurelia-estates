@@ -5,13 +5,36 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Non-blocking web font: text renders immediately in the fallback and swaps when the font arrives. -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@400;600;700&display=swap"></noscript>
+    <link rel="preconnect" href="https://images.unsplash.com">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Aurelia Estates — browse international properties, compare listing details and explore illustrative investment insights." />
     <meta property="og:title" content="Aurelia Estates" />
     <meta property="og:description" content="Browse international properties, compare listing details and explore illustrative investment insights." />
     <meta property="og:type" content="website" />
     <title>Aurelia Estates</title>
+    <script>
+      // The hero image is the homepage LCP element but is only discovered after the JS route chunk renders.
+      // Preload the same candidates HeroSection uses (keep in sync) so the download starts with the HTML.
+      if (location.pathname === '/') {
+        [
+          ['(max-width: 767px) and (max-aspect-ratio: 2/3)', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=640&h=800&q=80 640w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=960&h=1200&q=80 960w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=1280&h=1600&q=80 1280w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&crop=center&w=1600&h=2000&q=80 1600w', '(min-width: 640px) max(100vw, 512px), max(100vw, 480px)'],
+          ['not all and (max-width: 767px) and (max-aspect-ratio: 2/3)', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=960&q=80 960w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1280&q=80 1280w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80 1600w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80 1920w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2500&q=80 2500w', '(min-width: 1024px) max(100vw, 935px), (min-width: 640px) max(100vw, 965px), max(100vw, 905px)'],
+        ].forEach(function (hero) {
+          var link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.media = hero[0];
+          link.setAttribute('imagesrcset', hero[1]);
+          link.setAttribute('imagesizes', hero[2]);
+          link.setAttribute('fetchpriority', 'high');
+          document.head.appendChild(link);
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
