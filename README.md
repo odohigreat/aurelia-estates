@@ -2,6 +2,8 @@
 
 A responsive React and TypeScript property application with published Supabase listings, Supabase account access, shareable property pages, interactive charts and validated enquiry preview and authenticated submission.
 
+**Deployment status:** The latest Supabase-integrated version is publicly deployed on Vercel and available at https://aurelia-estates-kappa.vercel.app/. For safety and security reasons the property listings and financial figures are illustrative; the platform does not execute property purchases or financial transactions.
+
 ## Current scope
 
 The application reads published property records from Supabase and uses Supabase Auth for registration, email confirmation, sign-in, session restoration and sign-out. The existing listings, market figures and document records remain illustrative. Unverified partner branding is not presented on the homepage. KYC completion is simulated. Property enquiries can be validated, previewed and submitted by authenticated users with confirmed email addresses. Submitted enquiries are saved in Supabase; no enquiry email delivery is implemented. General contact and KYC forms remain previews. API documentation describes examples, not operational endpoints.
